@@ -1,4 +1,5 @@
 # Workflow for Generating Multi-Agent Plans
+Plan before you code. Follow the instructions below to step by step generate Plan that works.
 
 1. **Preparation**
    - Re-read `AGENTS.md`, `llms-full.txt`, and any linked guidance they cite.
@@ -22,7 +23,7 @@
 
 4. **Master Plan — `docs/ai_docs/MASTER_PLAN.md`**
    - Revisit every finding noted in `docs/ai_docs/judge_PLAN.md`.
-   - Incorporate resolutions or mitigations for MOST CRITICAL issue, if any.
+   - Incorporate resolutions or mitigations for MOST CRITICAL issue for multi agent architecture, if any.
    - Incorporate as much information as necessary for effective coding using the plan
      as a guide.
    - Author the final implementation roadmap in
