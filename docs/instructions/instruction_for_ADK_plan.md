@@ -1,202 +1,101 @@
-# 🧭 instruction_for_google-adk.md  
-**ALWAYS → Follow the instruction in the file below and create or update the docs/google-adk.md based on the code for AI agents in the agents folder**
+# 🧭 Google ADK Planning Playbook
 
-
-**Purpose:**  
-Define the standard operating procedure for creating and maintaining `docs/google-adk.md` — the **digital twin** of all AI agents implemented with **Google ADK** in this repository.
+This guide defines how AI coding agents must produce architecture plan before modifying the agents in Google ADK codebase. Follow every rule below to keep the multi-agent system coherent and observable.
 
 ---
 
-## 1️⃣ 🎯 Objective  
+## 1️⃣ 🎯 Objective
 
-`google-adk.md` acts as a **live mirror** of the multi-agent system defined in code.  
-It ensures human developers and coding agents understand **the current AI agent architecture**, preventing changes that break dependencies or create circular failures.
+Generate a **single architecture plan** that explains how the requested changes will alter the agent hierarchy, tools, state, and orchestration. The plan must be saved as `docs/ai_docs/google-adk_PLAN.md`.
 
-Update it **immediately after any code modification** to AI agents.
-
-**Outcome:**  
-- No changes are made in isolation.  
-- Relationships among agents remain coherent.  
-- Coding agents can reason safely about downstream effects.
-
-**Before every update, re-read and honor:**  
-- `AGENTS.md` → framework rules & ADK-reuse policy.  
-- `llms-full.txt` → model and API parameters (never invent).  
-- `instructions_for_docs.md` → documentation quality and structure requirements.
+**Outcomes**
+- No change is made without a peer-reviewable plan.
+- Dependencies and state hand-offs remain sound.
+- Future agents can reason about impact and testing without guesswork.
 
 ---
 
-## 2️⃣ 📚 Reference Inputs (Read-Only)
+## 2️⃣ 📚 Mandatory Inputs (read every time)
 
-| File | Purpose |
-|------|----------|
-| **`AGENTS.md`** | ADK usage policy, naming conventions, and repo-wide rules. |
-| **`llms-full.txt`** | Canonical list of valid ADK models, APIs, and agent types. |
-| **`instructions_for_docs.md`** | Documentation structure and example format. |
-| **Project code (`agents/**/agent.py`)** | Source for actual agent wiring, tools, callbacks, and session state (read-only). |
+| Input | Why it matters |
+|-------|----------------|
+| `AGENTS.md` | Source of truth for ADK usage rules, naming, and guardrails. |
+| `llms-full.txt` | Canonical reference for valid models, tools, and constraints. |
+| `docs/ai_docs/google-adk.md` | Current documented architecture; align plan updates with actual state (skip if missing). |
+| `agents/**/agent.py` (read-only) | Confirms real wiring, tools, and callbacks you must preserve or modify. |
 
-> Never modify any of the files above. Treat them strictly as inputs to generate `google-adk.md`.
-
----
-
-## 3️⃣ 🧩 Scope of `google-adk.md`
-
-Your `google-adk.md` must contain the following, **in order**:
-
-1. 🧭 **Agent Hierarchy Overview**  (root → all descendants)
-2. 🧠 **Root Agent Section**  (purpose, sub-agents, tools, callbacks, session state I/O, model, budget/policy)
-3. ⚙️ **Sub-Agent Sections** (recursively)  
-4. 🔗 **Agent Connection Mapping**  (text tree diagram)
-5. 🧱 **Canonical Session State Keys**  (YAML summary across the whole system)
-6. 🔄 **Update Protocol & Consistency Checks** (how to keep it in sync)
-
-Together, these sections form a **complete digital twin** — a markdown-based mirror of your ADK architecture.
+> Never edit the inputs above. Treat them as read-only data sources for your plan.
 
 ---
 
-## 4️⃣ ✍️ Authoring Rules
+## 3️⃣ 🧪 When a Plan Is Required
 
-- Document **what exists in code only** — no speculation or future intent.  
-- Match all names **exactly** as in Python (`LlmAgent`, `SequentialAgent`, `LoopAgent`, etc.).  
-- Prefer **lists and short phrases** to long paragraphs.  
-- Use icons: **✅ implemented**, **🚧 in progress**, **❌ deprecated**.  
-- When an agent is renamed, moved, or removed, **update every occurrence**.  
-- Each section should read like a declarative system specification — **not** prose.
+- Any request that touches agent wiring, tools, callbacks, session state, or evaluation flow.
+- When adding, removing, or renaming agents or tools.
+- When code or documentation changes could desynchronize `docs/ai_docs/google-adk.md`, if present.
+- When the latest plan does not already cover the proposed work.
 
----
-
-## 5️⃣ 📑 Canonical Structure
-
-Follow this structure exactly whenever you rebuild or update `google-adk.md`.
+If the work is purely editorial documentation or test updates with no architecture impact, confirm in writing that no plan is needed before proceeding.
 
 ---
 
-### 5.1 🧭 Agent Hierarchy Overview
+## 5️⃣ 🛠️ End-to-End Planning Workflow
 
-```
-<root_agent_name> (<AgentType>) ✅
-├─ <child_agent_1> (<AgentType>)
-│  ├─ <grandchild_a> (<AgentType>)
-│  └─ <grandchild_b> (<AgentType>)
-└─ <child_agent_2> (<AgentType>) 🚧
-```
+### Step 1 — Confirm Intent
+- Restate the user request in your own words.
+- Identify which agents, tools, or state keys could be affected.
+- Clarify open questions before moving forward.
 
-**Tips:**  
-- Order agents as they appear in code (`sub_agents=[...]`).  
-- Show only **active** agents. Move removed ones to a **Deprecated** section if needed.  
+### Step 2 — Inventory Current Architecture
+- Read `docs/ai_docs/google-adk.md` and the relevant `agents/**/agent.py` files.
+- Capture existing agent responsibilities, sub-agent lists, tools, callbacks, and state interactions.
+- Note any gaps or inconsistencies between docs and code that the plan must resolve.
 
----
+### Step 3 — Map the Delta
+- Decide which existing ADK components will be reused (e.g., `google.adk.agents.LlmAgent`, `AgentTool`, `StateTool`).
+- Identify additions vs. modifications vs. removals.
+- Record risks, constraints, compliance or guardrail impacts (budget caps, tool limits, privacy).
 
-### 5.2 🧠 Root Agent
+### Step 4 — Draft the Architecture Plan
+- Use the required template (see Section 6) and fill in every field with concise, testable statements.
+- Reference concrete file paths, agent names, state keys, and tool classes you will touch.
+- Explain how the plan upholds `AGENTS.md` rules (reuse-first, no custom base classes, etc.).
 
-* **Agent Name:** `<root_agent_name>`  
-* **Type:** `LlmAgent | SequentialAgent | ParallelAgent | LoopAgent | BaseAgent (custom)`  
-* **Purpose:** Concise one-line summary of its role.  
-* **Sub-agents:** `[<sub_agent_1>, <sub_agent_2>, ...]`  
-* **Tools:** `tool_name (params) — purpose`  
-* **Callbacks:** `callback_name — when triggered / why`  
-* **Session State:**  
-  - **reads:** `[state_key_1, state_key_2, …]`  
-  - **writes:** `[state_key_3, state_key_4, …]`  
-* **Model:** from `llms-full.txt` (e.g., `gemini-2.5-flash`)  
-* **Budget / Policy:** `{ max_tokens, max_cost_usd, allow_web, max_iterations, … }`  
+### Step 5 — Validate Readiness
+- Cross-check that each proposed change aligns with available ADK components in `llms-full.txt`.
+- Ensure session state flows include read/write ownership and termination criteria.
+- Double-check numbering, headings, and markdown lint (80 char lines when possible).
 
----
-
-### 5.3 ⚙️ Sub-Agent Sections (repeat per agent)
-
-* **Agent Name:** `<agent_name>`  
-* **Type:** `<AgentType>`  
-* **Purpose:** One-liner describing the agent’s specific task.  
-* **Sub-agents:** `[ ... ]` (if any)  
-* **Tools:** `[ ... ]` (if any)  
-* **Callbacks:** `[ ... ]` (if any)  
-* **Session State:** **reads** `[ ... ]`, **writes** `[ ... ]`  
-* **Model:** `<model or N/A>`  
-* **Special Notes:** (optional) conditional logic, iteration, or I/O considerations.
+### Step 6 — Publish
+- Save the final Markdown to `docs/ai_docs/google-adk_PLAN.md`.
+- Avoid trailing whitespace or unfinished TODOs.
+- Reference this plan in your subsequent PR/summary when executing the work.
 
 ---
 
-### 5.4 🔗 Agent Connection Mapping
+## 6️⃣ 🧱 Required Plan format
 
-```
-<root_agent> (<Type>)
-├─ <child_agent_A> (<Type>) + key callbacks/tools
-│  ├─ <grandchild_A1> (<Type>)
-│  └─ <grandchild_A2> (<Type>)
-└─ <child_agent_B> (<Type>)
-```
-
-Keep it **readable in 5–10 seconds**.  
-Avoid descriptions — list names, hierarchy, and essentials only.
+The output format in `docs/ai_docs/google-adk_PLAN.md` must contain the multi agent architecture in the example format as specified in the appendix below.
 
 ---
 
-### 5.5 🧱 Session State (Canonical Keys)
+## 7️⃣ ✅ Quality Checklist (run before finalizing)
 
-Summarize all session variables across the system:
+- [ ] All required inputs were re-read this session (reference timestamps if possible).
+- [ ] Every change references existing ADK classes/tools instead of custom builds unless explicitly justified.
+- [ ] File paths and agent names match repo casing exactly.
+- [ ] State transitions cover both success and failure paths.
+- [ ] Plan aligns with constraints in `AGENTS.md` (no new base classes, sub-agent patterns honored).
+- [ ] Plan is concise (prefer <800 words) yet complete—no vague placeholders.
+- [ ] Example or appendix (Section 8) was used for formatting consistency.
 
-```yaml
-user_request: { description: "...", producer: "root_agent", consumers: ["..."] }
-research_plan: { description: "...", producer: "plan_generator", consumers: ["research_pipeline"] }
-evaluation_result: { description: "...", producer: "research_evaluator", consumers: ["iterative_refinement_loop"] }
-final_report: { description: "...", producer: "report_composer", consumers: [] }
-controls: { max_cost_usd: number, max_tokens: number, allow_web: boolean }
-telemetry: { token_usage: number, cost: number, tool_calls: [] }
-```
-
-> **Rule:** If any agent changes its read/write keys, update this section and its references.
+Document in the plan that each checklist item was met. If something cannot be satisfied, explain why and flag for human review.
 
 ---
 
-## 6️⃣ 🔄 Update Protocol (Run After Every Agent Change)
+## 8️⃣ 📎 Appendix — Example Reference
 
-### Step 1 — Detect  
-Monitor for any change to:
-- `agents/**/agent.py`
-- Agent imports, wiring, or sub-agent composition
-- `output_key` / session I/O definitions
-- Model configuration or callback registration
-
-### Step 2 — Rebuild  
-Regenerate:
-- Hierarchy overview  
-- Root + sub-agent sections  
-- Connection map  
-- Session state keys  
-
-### Step 3 — Validate  
-Confirm:
-- All names match code **exactly** (case-sensitive).  
-- Parent `sub_agents` lists mirror code order.  
-- Tools and callbacks exist and are spelled correctly.  
-- Models are valid per `llms-full.txt`.  
-- Implementation adheres to ADK reuse rules in `AGENTS.md`.
-
-### Step 4 — Commit  
-Add or update footer:
-
-```
-<!-- Updated on YYYY-MM-DD by AI Coding Agent -->
-```
-
-Commit doc and code **together** in the same PR.
-
----
-
-## 7️⃣ ✅ Pre-Merge Validation Checklist
-
-- [ ] `google-adk.md` updated in same PR as code.  
-- [ ] All agent names/types/models/tools/callbacks verified.  
-- [ ] Session-state table matches reads/writes.  
-- [ ] No stale or deprecated agents referenced.  
-- [ ] ADK reuse compliance confirmed.  
-
----
-
-## 8️⃣ 📎 Appendix — Example Structure
-
-Use the following as your **reference example** for clarity, structure, and level of detail expected in `google-adk.md`.
+Use the following example as a style and depth benchmark when authoring `docs/ai_docs/google-adk_PLAN.md`. Adapt the structure to your scenario while keeping the required sections above.
 
 ---
 
@@ -213,7 +112,6 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Quality Assurance**: Loop with evaluation, targeted re-search, and hallucination checks
   ✅ **Enhanced Search Executor Callback Implemented** (rank/merge/dedup + cost/budget guard)
 * **Final Output**: Publication-ready Markdown report + Zotero/CSL JSON citations + appendix of sources
-
 
 ---
 
@@ -241,7 +139,6 @@ This document provides a complete implementation of a sophisticated **competitor
   * `controls.max_tokens = 180k`
   * `controls.allow_web = true`
 
-
 ---
 
 ### **Plan Generator Agent**
@@ -254,7 +151,6 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Callbacks**: `validate_plan_schema` (JSON schema enforcement)
 * **Session State**: reads `user_request`, `research_context`; writes `research_plan`
 * **Model**: `gemini-2.5-flash`
-
 
 ---
 
@@ -269,7 +165,6 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Session State**: processes `research_plan` → `research_sections` → `research_findings`
 * **Model**: N/A
 
-
 ---
 
 ### **Section Planner Agent**
@@ -282,7 +177,6 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Callbacks**: `token_budget_guard`
 * **Session State**: reads `research_plan`; writes `research_sections` (with step DAG)
 * **Model**: `gemini-2.5-flash`
-
 
 ---
 
@@ -305,7 +199,6 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Session State**: reads `research_sections`; writes `research_findings` (per section: facts, quotes, tables, `source_ids`)
 * **Model**: `gemini-2.5-flash`
 
-
 ---
 
 ### **Iterative Refinement Loop**
@@ -322,7 +215,6 @@ This document provides a complete implementation of a sophisticated **competitor
   * All `success_criteria` met **AND** no critical `unresolved_questions`
   * OR budget/time/iteration ceilings (`controls.max_iterations = 3`)
 
-
 ---
 
 ### **Research Evaluator Agent**
@@ -336,10 +228,9 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Session State**: reads `research_findings`; writes `evaluation_result`
 * **Model**: `gemini-2.5-pro`
 
-
 ---
 
-### **Enhanced Search Executor Agent**  ✅ IMPLEMENTED
+### **Enhanced Search Executor Agent** ✅ IMPLEMENTED
 
 * **Agent Name**: `enhanced_search_executor`
 * **Agent Type**: `LlmAgent`
@@ -357,7 +248,6 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Session State**: reads `repair_actions`, `research_findings`; writes `enhanced_research_findings`
 * **Model**: `gemini-2.5-flash`
 
-
 ---
 
 ### **Escalation Checker Agent**
@@ -367,7 +257,6 @@ This document provides a complete implementation of a sophisticated **competitor
 * **Purpose**: Decide loop termination / human escalation
 * **Session State**: reads `evaluation_result`; writes `escalation_decision`
 * **Model**: N/A
-
 
 ---
 
@@ -384,7 +273,6 @@ This document provides a complete implementation of a sophisticated **competitor
   * `appendix_builder_callback` (Sources log → Appendix A)
 * **Session State**: reads `research_findings`, `sources_log`; writes `final_report`, `citations_csl_json`
 * **Model**: `gemini-2.5-pro`
-
 
 ---
 
@@ -404,8 +292,6 @@ competitor_analysis_agent (LlmAgent – Root)
 │        └─ escalation_checker (Custom BaseAgent)
 └─ report_composer (LlmAgent + citation_formatter, appendix_builder)
 ```
-
-
 
 ---
 
@@ -427,7 +313,3 @@ telemetry: { token_usage, cost, tool_calls[], warnings[] }
 ```
 
 ---
-
-```
-<!-- Auto-updated by ADK AgentDoc Generator v1.x -->
-```

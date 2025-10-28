@@ -8,13 +8,13 @@ For each topic below, you will further assume "System role" stated below and per
 ## Checklist (do these, conceptually)
 - **Hard rule:** **read and honor `llms-full.txt`, `AGENTS.md`**. Do **not** modify it. Use the knowledge available in it to improve your judgement.
 - **Hard rule:** **read and understand code files in `refs/*` folder**. Do **not** modify it. Use the knowledge of coding patterns and best practices available in it to improve your ability to judge multi-agent architectures. Do not judge the code files in `refs/*` folder.
-- **Hard rule:** **read and understand the current architecture of the AI Agents in the file `docs/google-adk.md`, if present**. **Do not modify it.**
+- **Hard rule:** **read and understand the current architecture of the AI Agents in the file `docs/ai_docs/google-adk.md`, if present**. **Do not modify it.**
 - **Hard rule:** **read and understand the current architecture of the AI Agents in the code files in the folder `agents/*`**.
-- **Hard rule:** **The multi-agent architecture for your evaluation is solely based on the content of `docs/google-adk.md`, if present, and code files in the folder `agents/*`, if present. Do not review any other code files outside of the `agents/*` folder, if present.**
+- **Hard rule:** **The multi-agent architecture for your evaluation is solely based on the content of `docs/ai_docs/google-adk.md`, if present, and code files in the folder `agents/*`, if present. Do not review any other code files outside of the `agents/*` folder, if present.**
 
 ## Output Format
-- Produce a single Markdown file named **`docs/judge_architecture.md`**.
-- Append the findings under each of the below Topic in the same file **`docs/judge_architecture.md`**.
+- Produce a single Markdown file named **`docs/ai_docs/judge_architecture.md`**.
+- Append the findings under each of the below Topic in the same file **`docs/ai_docs/judge_architecture.md`**.
 - You can provide more than 2 findings for each topic. Append the findings under each of the below Topic one below another.
 
 -------------------------------------------
@@ -22,7 +22,7 @@ For each topic below, you will further assume "System role" stated below and per
 
 System role: You judge whether the multi-agent system’s stated objective and scope match what the ADK/Python code actually implements.
 
-Example Checks: (a) goal→outputs alignment; (b) in/out of scope features; (c) unnecessary agents/steps vs requirements; (d) success criteria traceability (evals/test cases) to objectives; (e) contradictions between README/diagrams and code paths; (f) static diff between objectives claimed in `docs/google-adk.md` and the `root_agent` behaviors defined in `agents/*`; (g) confirm each declared success metric has a matching evaluator/test module; (h) flag agents or tools instantiated in code with no documented business objective.
+Example Checks: (a) goal→outputs alignment; (b) in/out of scope features; (c) unnecessary agents/steps vs requirements; (d) success criteria traceability (evals/test cases) to objectives; (e) contradictions between README/diagrams and code paths; (f) static diff between objectives claimed in `docs/ai_docs/google-adk.md` and the `root_agent` behaviors defined in `agents/*`; (g) confirm each declared success metric has a matching evaluator/test module; (h) flag agents or tools instantiated in code with no documented business objective.
 
 Output Validation: Provide critical findings, if any, in below format. 
 
@@ -64,7 +64,7 @@ Finding 2:
 
 System role: Judge clarity and precision of each agent’s `name`, `description`, and `instruction`.
 
-Example Checks: (a) names reflect purpose; (b) descriptions define decision boundaries; (c) instructions specify allowed behaviors and tool usage; (d) negative scope (“do not…”) where needed; (e) ambiguity leading to mis-routing; (f) cross-check agent folder names vs `Agent(name=...)` strings for clarity; (g) verify instructions cite explicit input/output schema references; (h) flag vague or missing descriptions when comparing code to `docs/google-adk.md`.
+Example Checks: (a) names reflect purpose; (b) descriptions define decision boundaries; (c) instructions specify allowed behaviors and tool usage; (d) negative scope (“do not…”) where needed; (e) ambiguity leading to mis-routing; (f) cross-check agent folder names vs `Agent(name=...)` strings for clarity; (g) verify instructions cite explicit input/output schema references; (h) flag vague or missing descriptions when comparing code to `docs/ai_docs/google-adk.md`.
 
 Output Validation: Provide critical findings, if any, in below format
 

@@ -27,7 +27,7 @@
 - Follow the above instruction and create/update docs/testing.md
 
 ### 4. Google ADK Changes → docs/google-adk.md
-Follow the instruction in the file - [instruction_for_google-adk.md](docs/instruction_for_google-adk.md)
+Follow the instruction in the file - [instruction_for_google-adk.md](docs/instructions/instruction_for_google-adk.md)
 
 ### 5. **ALWAYS Update** → docs/main.md
 - **Required for ALL changes** - describes overall repo purpose and architecture
@@ -36,7 +36,7 @@ Follow the instruction in the file - [instruction_for_google-adk.md](docs/instru
 - Integration points between components
 
 ### 6. Ideas for improvement → docs/Improvement_ideas.md
-Follow the instruction in the file - [instruction_for_ideas.md](docs/instruction_for_ideas.md)
+Follow the instruction in the file - [instruction_for_ideas.md](docs/instructions/instruction_for_ideas.md)
 
 
 ## Documentation Quality Standards
@@ -64,7 +64,7 @@ Follow the instruction in the file - [instruction_for_ideas.md](docs/instruction
 
 The main `/AGENTS.md` file should reference this documentation structure but NOT contain feature-
 specific details. Instead, it should point AI agents to:
-- Check `/docs/` for current work
+- Check `/docs/ai_docs/` for current work
 - Use the documentation structure for understanding project features
 - Follow the patterns established in completed features
 
