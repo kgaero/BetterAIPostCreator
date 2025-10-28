@@ -1,1 +1,1 @@
-Follow the instruction in the file - [instructions_for_docs.md](documentation/instructions/instructions_for_docs.md) and create and/or update the documentations.
+Follow the instruction in the file - [instructions_for_docs.md](docs/instructions/instructions_for_docs.md) and create and/or update the documentations.

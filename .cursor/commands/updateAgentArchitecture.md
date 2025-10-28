@@ -1,1 +1,1 @@
-Follow the instruction in the file - [instruction_for_google-adk.md](documentation/instructions/instruction_for_google-adk.md)
+Follow the instruction in the file - [instruction_for_google-adk.md](docs/instructions/instruction_for_google-adk.md)
